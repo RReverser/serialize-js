@@ -7,28 +7,56 @@ Sometimes it's useful to serialize object into the JS user-readable representati
 
 This small serializer allows you to overcome that and get pretty representations, just as you would write it with own hands in code:
 
-```javascript
-> serialize({a: 1, b: 2})
-{a: 1, b: 2}
+<table>
+<thead>
+<tr><th>obj</th><th>JSON.stringify(obj, null, 2)</th><th>serialize(obj)</th></tr>
+</thead>
+<tbody>
 
-> serialize({a: 1, b: 2, c: 3})
-{
+<tr><th><pre><code>{a: 1}</code></pre></th><td><pre><code>{
+  "a": 1
+}</code></pre></td><td><pre><code>{a: 1}</code></pre></td></tr>
+
+<tr><th><pre><code>{a: 1, b: 2}</code></pre></th><td><pre><code>{
+  "a": 1,
+  "b": 2
+}</code></pre></td><td><pre><code>{a: 1, b: 2}</code></pre></td></tr>
+
+<tr><th><pre><code>{a: 1, b: 2, c: 3}</code></pre></th><td><pre><code>{
+  "a": 1,
+  "b": 2,
+  "c": 3
+}</code></pre></td><td><pre><code>{
   a: 1,
   b: 2,
   c: 3
-}
+}</code></pre></td></tr>
 
-> serialize([{a: 1, b: 2, c: 3, '-': '+'}])
-[{
+<tr><th><pre><code>[{a: 1, b: 2, c: 3, '-': '+'}]</code></pre></th><td><pre><code>[
+  {
+    "a": 1,
+    "b": 2,
+    "c": 3,
+    "-": "+"
+  }
+]</code></pre></td><td><pre><code>[{
   a: 1,
   b: 2,
   c: 3,
   "-": "+"
-}]
+}]</code></pre></td></tr>
 
-> serialize([{a: 1}, {b: 2}])
-[
+<tr><th><pre><code>[{a: 1}, {b: 2}]</code></pre></th><td><pre><code>[
+  {
+    "a": 1
+  },
+  {
+    "b": 2
+  }
+]</code></pre></td><td><pre><code>[
   {a: 1},
   {b: 2}
-] 
-```
+]</code></pre></td></tr> 
+
+</tbody>
+</table>
