@@ -1,7 +1,7 @@
 serialize-js
 ============
 
-Shorter object serialization for JavaScript.
+Small serialization helper for those who wants to get JS representation of object but gets only this dirty JSON.
 
 Sometimes it's useful to serialize object into the JS user-readable representation but the only option you have is JSON which adds all this damn quotes around any keys (incl. valid identifiers), indents entire contents of any objects/arrays etc.
 
