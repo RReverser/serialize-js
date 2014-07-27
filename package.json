@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/RReverser/serialize-js/issues"
   },
-  "homepage": "https://github.com/RReverser/serialize-js"
+  "homepage": "https://github.com/RReverser/serialize-js",
+  "devDependencies": {
+    "karma-chrome-launcher": "^0.1.4"
+  }
 }
