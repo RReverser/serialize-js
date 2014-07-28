@@ -1,10 +1,10 @@
 {
   "name": "serialize-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "User-readable object serialization for JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/RReverser/serialize-js",
   "devDependencies": {
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-jasmine": "^0.1.5"
+    "mocha": "~1.21.3"
   }
 }
