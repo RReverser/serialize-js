@@ -74,16 +74,16 @@ You can optionally pass options object as second argument (`serialize(obj, { /*.
 Possible options are below:
 
 ### initialIndent
-Type: `String`
+Type: `Number|String`
 Default: `''`
 
-Initial indentation of output (generated indentation will be relative to this one).
+Initial indentation of output (generated indentation will be relative to this one). It can be either number of spaces or explicit string.
 
 ### indent
 Type: `Number|String`
 Default: `2`
 
-Indentation to be used for nested representations; it can be either number of spaces or explicit string (like `'\t'`).
+Indentation to be used for nested representations. It can be either number of spaces or explicit string (like `'\t'`).
 
 ### forceJSON
 Type: `Boolean`
