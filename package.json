@@ -1,29 +1,59 @@
 {
-  "name": "serialize-js",
-  "version": "1.1.0",
-  "description": "User-readable object serialization for JavaScript.",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha --reporter spec"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/RReverser/serialize-js.git"
-  },
-  "keywords": [
-    "serialize",
-    "javascript",
-    "object",
-    "pretty",
-    "print"
-  ],
-  "author": "Ingvar Stepanyan <me@rreverser.com> (http://rreverser.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/RReverser/serialize-js/issues"
-  },
-  "homepage": "https://github.com/RReverser/serialize-js",
-  "devDependencies": {
-    "mocha": "~1.21.3"
-  }
+    "name": "serialize-js",
+    "version": "1.2.0",
+    "description": "User-readable object serialization for JavaScript.",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/RReverser/serialize-js.git"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "private": false,
+    "keywords": [
+        "serialize",
+        "javascript",
+        "object",
+        "pretty",
+        "print"
+    ],
+    "author": {
+        "name": "Ingvar Stepanyan",
+        "email": "me@rreverser.com",
+        "url": "http://rreverser.com/"
+    },
+    "contributors": [
+        {
+            "name": "Jens Krefeldt",
+            "email": "j.krefeldt@gmail.com",
+            "url": "https://github.com/deadratfink"
+        }
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/RReverser/serialize-js/issues"
+    },
+    "homepage": "https://github.com/RReverser/serialize-js",
+    "scripts": {
+        "jsdocs": "jsdoc2md index.js > readme/API.md",
+        "jsdocs-private": "jsdoc2md --private index.js > readme/API.md",
+        "readme": "npm run jsdocs && cat readme/HEAD.md > README.md && package-json-to-readme --no-footer ./package.json >> README.md && cat readme/USAGE.md >> README.md  && echo '# API Reference\n\n' >> README.md && cat readme/API.md >> README.md&& cat readme/CHANGELOG.md >> README.md && doctoc README.md --github --title '# TOC' --maxlevel 2",
+        "test": "istanbul cover _mocha --report html -- -R spec ./test/test*.js"
+    },
+    "devDependencies": {
+        "codeclimate-test-reporter": "^0.4.0",
+        "codecov": "^1.0.1",
+        "coveralls": "^2.11.14",
+        "doctoc": "^1.0.0",
+        "istanbul": "^0.4.5",
+        "jsdoc-parse": "^2.0.5",
+        "jsdoc-to-markdown": "^2.0.1",
+        "mocha": "^3.1.2",
+        "mocha-lcov-reporter": "^1.2.0",
+        "package-json-to-readme": "^1.5.1"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    }
 }
