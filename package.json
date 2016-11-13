@@ -39,7 +39,7 @@
         "jsdocs": "jsdoc2md index.js > readme/API.md",
         "jsdocs-private": "jsdoc2md --private index.js > readme/API.md",
         "readme": "npm run jsdocs && cat readme/HEAD.md > README.md && package-json-to-readme --no-footer ./package.json >> README.md && cat readme/USAGE.md >> README.md  && echo '# API Reference\n\n' >> README.md && cat readme/API.md >> README.md&& cat readme/CHANGELOG.md >> README.md && doctoc README.md --github --title '# TOC' --maxlevel 2",
-        "test": "istanbul cover _mocha --report html -- -R spec ./test/test*.js"
+        "test": "istanbul cover _mocha --report lcovonly --report html -- -R spec ./test/test*.js"
     },
     "devDependencies": {
         "codeclimate-test-reporter": "^0.4.0",
