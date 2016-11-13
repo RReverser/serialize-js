@@ -255,3 +255,4 @@ The module configuration `Options` type.
     - Add [_Makefile_](https://www.gnu.org/software/make/manual/make.html)
     - Add [_.editorconfig_](http://editorconfig.org/)
     - Add _.gitignore_ and _.npmignore_
+    - Add [_inch.json_](https://inch-ci.org/)
