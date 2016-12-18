@@ -43,10 +43,51 @@
 		return true;
 	}
 
-	function serializeKey(key, forceJSON) {
-		return (!forceJSON && isIdentifier(key)) ? key : JSON.stringify(key);
+	/**
+	 * Turns a double-quoted string into a single-quoted one. If there are not quotes
+	 * the orginal string is returned un-replaced.
+	 * @param {string} str - The to change.
+	 * @returns {string} - The single-quoted string or teh string with no replacement.
+	 * @private
+	 */
+	function toSingleQuotes(str) {
+		return str.replace(/^"/, '\'').replace(/"$/, '\'');
 	}
 
+	/**
+	 * Serialize the key of a key-value pair.
+	 * @param {String} key                        - The key.
+	 * @param {Boolean} forceJSON=false           - Whether to force JSON style keys.
+	 * @param {Boolean} [forceSingleQuotes=false] - Whether to force JSON style keys with single-quotes.
+	 * **NOTE:** only effective if `forceJSON` is set to `true`!
+	 * @returns {String}                          - The stringified key.
+	 * @private
+	 */
+	function serializeKey(key, forceJSON, forceSingleQuotes) {
+		return (!forceJSON && isIdentifier(key)) ? key :
+			forceSingleQuotes ?
+				toSingleQuotes(JSON.stringify(key)) :
+				JSON.stringify(key);
+	}
+
+	/**
+	 * Serialize the (primitive!) value of a key-value pair.
+	 * @param {String|Number|Boolean} value       - The value.
+	 * @param {Boolean} [forceSingleQuotes=false] - Whether to force JSON style keys with single-quotes.
+	 * @returns {String}                          - The stringified value.
+	 * @private
+	 */
+	function serializePrimitiveValue(value, forceSingleQuotes) {
+		return (forceSingleQuotes ? toSingleQuotes(JSON.stringify(value).replace(/[']/g, '\\\'')) :
+			JSON.stringify(value));
+	}
+
+	/**
+	 * Check for typeof `Object`.
+	 * @param {*} obj - The object to check.
+	 * @returns {Boolean} - `true` if `obj` is typeof `Object`, else `false`.
+	 * @private
+	 */
 	function isObject(obj) {
 		return typeof obj === 'object' && obj !== null;
 	}
@@ -55,69 +96,73 @@
 		if (indent == null) {
 			indent = defaultValue;
 		}
-
-		return typeof indent === 'number' ? Array(indent + 1).join(' ') : String(indent);
+		return typeof indent === 'number' ? new Array(indent + 1).join(' ') : String(indent);
 	}
 
 	function serialize(obj, options) {
 		options = options || {};
-		
+
 		var indent = indentToString(options.indent, 2);
 		var initialIndent = indentToString(options.initialIndent, '');
 		var forceJSON = !!options.forceJSON;
+		var forceSingleQuotes = !!options.forceSingleQuotes;
 
 		return initialIndent + (function subSerialize(obj, initialIndent) {
-			// null, string, number, boolean -> as usual
-			if (!isObject(obj)) {
-				return JSON.stringify(obj);
-			}
+				// null, string, number, boolean -> as usual
+				if (!isObject(obj)) {
+					return serializePrimitiveValue(obj, forceSingleQuotes);
+				}
 
-			var localIndent = initialIndent + indent;
+				var localIndent = initialIndent + indent;
 
-			if (obj instanceof Array) {
+				if (obj instanceof Array) {
+					/*
+					 array of one object -> [{
+					 a: 1,
+					 b: 2,
+					 c: 3
+					 }]
+
+					 array of primitives -> [1, 2, 3, 4, 5]
+					 */
+					if (obj.length === 1 || !obj.some(isObject)) {
+						return '[' + obj.map(function (item) {
+								return subSerialize(item, initialIndent);
+							}).join(', ') + ']';
+					}
+
+					/*
+					 other arrays -> indented representation
+					 */
+					return '[\n' + obj.map(function (item) {
+							return localIndent + subSerialize(item, localIndent);
+						}).join(',\n') + '\n' + initialIndent + ']';
+				}
+
+				var pairs = Object.keys(obj).map(function (key) {
+					return {key: key, value: obj[key]};
+				});
+
 				/*
-				array of one object -> [{
-					a: 1,
-					b: 2,
-					c: 3
-				}]
-
-				array of primitives -> [1, 2, 3, 4, 5]
-				*/
-				if (obj.length === 1 || !obj.some(isObject)) {
-					return '[' + obj.map(function (item) {
-						return subSerialize(item, initialIndent);
-					}).join(', ') + ']';
+				 object of 0, 1 or 2 primitive values -> {x: 1, y: 2}
+				 */
+				if (pairs.length <= 2 && !pairs.some(function (pair) {
+						return isObject(pair.value)
+					})) {
+					return '{' + pairs.map(function (pair) {
+							return serializeKey(pair.key, forceJSON, forceSingleQuotes) +
+								': ' + serializePrimitiveValue(pair.value, forceSingleQuotes);
+						}).join(', ') + '}';
 				}
 
 				/*
-				other arrays -> indented representation
-				*/
-				return '[\n' + obj.map(function (item) {
-					return localIndent + subSerialize(item, localIndent);
-				}).join(',\n') + '\n' + initialIndent + ']';
-			}
-
-			var pairs = Object.keys(obj).map(function (key) {
-				return {key: key, value: obj[key]};
-			});
-
-			/*
-			object of 0, 1 or 2 primitive values -> {x: 1, y: 2}
-			*/
-			if (pairs.length <= 2 && !pairs.some(function (pair) { return isObject(pair.value) })) {
-				return '{' + pairs.map(function (pair) {
-					return serializeKey(pair.key, forceJSON) + ': ' + JSON.stringify(pair.value);
-				}).join(', ') + '}';
-			}
-
-			/*
-			other objects -> indented representation
-			*/
-			return '{\n' + pairs.map(function (pair) {
-				return localIndent + serializeKey(pair.key, forceJSON) + ': ' + subSerialize(pair.value, localIndent);
-			}).join(',\n') + '\n' + initialIndent + '}';
-		})(obj, initialIndent);
+				 other objects -> indented representation
+				 */
+				return '{\n' + pairs.map(function (pair) {
+						return localIndent + serializeKey(pair.key, forceJSON, forceSingleQuotes) +
+							': ' + subSerialize(pair.value, localIndent);
+					}).join(',\n') + '\n' + initialIndent + '}';
+			})(obj, initialIndent);
 	}
 
 	if (typeof module === 'object' && module.exports === exports) {

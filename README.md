@@ -90,3 +90,9 @@ Type: `Boolean`
 Default: `false`
 
 If set to `true`, generates JSON-compatible output (all the keys are wrapped with quotes, but indentation is still optimized).
+
+### forceSingleQuotes 
+Type: `Boolean`
+Default: `false`
+
+Whether to force single-quote style. Applied to _keys_ and values, of course, the first only effective if `forceJSON` is set to `true`!
